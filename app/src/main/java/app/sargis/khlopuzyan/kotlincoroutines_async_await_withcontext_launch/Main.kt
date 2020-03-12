@@ -22,6 +22,7 @@ fun main() {
 //    exampleAsyncAwait()
 //    exampleAsyncAwait1()
     exampleWithContext()
+    println("finishing - main")
 }
 
 suspend fun printlnDelay(message: String) {
@@ -36,9 +37,9 @@ suspend fun calculateHardThings(startNum: Int): Int {
 
 
 fun exampleBlocking() = runBlocking {
-    println("one")
-    printlnDelay("two")
-    println("three")
+    println("one - from thread ${Thread.currentThread().name}")
+    printlnDelay("two - from thread ${Thread.currentThread().name}")
+    println("three - from thread ${Thread.currentThread().name}")
 }
 
 fun exampleBlockingDispatcher() {
@@ -48,6 +49,7 @@ fun exampleBlockingDispatcher() {
     }
 
     println("three - from thread ${Thread.currentThread().name}")
+    println("finishing * exampleBlockingDispatcher \n")
 }
 
 fun exampleLaunchGlobal() = runBlocking {
@@ -60,7 +62,7 @@ fun exampleLaunchGlobal() = runBlocking {
     println("three - from thread ${Thread.currentThread().name}")
 
     delay(3000)
-    println("finishing")
+    println("finishing * exampleLaunchGlobal \n")
 }
 
 fun exampleLaunchGlobalWaiting() = runBlocking {
@@ -84,7 +86,7 @@ fun exampleLaunchCoroutineScope() = runBlocking {
     }
 
     println("three - from thread ${Thread.currentThread().name}")
-    println("finishing")
+    println("finishing : exampleLaunchCoroutineScope\n")
 }
 
 fun exampleLaunchCoroutineScope2() = runBlocking {
@@ -95,7 +97,7 @@ fun exampleLaunchCoroutineScope2() = runBlocking {
     }
 
     println("three - from thread ${Thread.currentThread().name}")
-    println("finishing")
+    println("finishing : exampleLaunchCoroutineScope2")
 }
 
 fun exampleLaunchCoroutineScope3() = runBlocking {
@@ -108,7 +110,7 @@ fun exampleLaunchCoroutineScope3() = runBlocking {
     }
 
     println("three - from thread ${Thread.currentThread().name}")
-    println("finishing")
+    println("finishing : exampleLaunchCoroutineScope3")
 
     (customDispatcher.executor as ExecutorService).shutdown()
 }
@@ -118,21 +120,19 @@ fun exampleAsyncAwait() = runBlocking {
     val startTime = System.currentTimeMillis()
 
     val deferred1 = async { calculateHardThings(10) }.await()
-    val deferred2 = async { calculateHardThings(20) }.await()
-    val deferred3 = async { calculateHardThings(30) }.await()
-
-    val sum = deferred1 + deferred2 + deferred3
-
     println("deferred1: $deferred1")
+    val deferred2 = async { calculateHardThings(20) }.await()
     println("deferred2: $deferred2")
+    val deferred3 = async { calculateHardThings(30) }.await()
     println("deferred3: $deferred3")
 
+    val sum = deferred1 + deferred2 + deferred3
     println("async.await result: $sum")
 
     val endTime = System.currentTimeMillis()
     println("Time taken: ${endTime - startTime}")
 
-    println("finishing")
+    println("finishing : exampleAsyncAwait")
 }
 
 fun exampleAsyncAwait1() = runBlocking {
@@ -149,7 +149,7 @@ fun exampleAsyncAwait1() = runBlocking {
     val endTime = System.currentTimeMillis()
     println("Time taken: ${endTime - startTime}")
 
-    println("finishing")
+    println("finishing : exampleAsyncAwait1")
 }
 
 fun exampleWithContext() = runBlocking {
@@ -166,5 +166,5 @@ fun exampleWithContext() = runBlocking {
     val endTime = System.currentTimeMillis()
     println("Time taken: ${endTime - startTime}")
 
-    println("finishing")
+    println("finishing : exampleWithContext")
 }
